@@ -215,14 +215,9 @@ async function startGateway() {
   fs.mkdirSync(STATE_DIR, { recursive: true });
   fs.mkdirSync(WORKSPACE_DIR, { recursive: true });
 
-  for (const lockPath of [
-    path.join(STATE_DIR, "gateway.lock"),
-    "/tmp/openclaw-gateway.lock",
-  ]) {
-    try {
-      fs.rmSync(lockPath, { force: true });
-    } catch {}
-  }
+  try {
+    await runCmd(OPENCLAW_NODE, clawArgs(["gateway", "stop"]));
+  } catch {}
 
   const args = [
     "gateway",
