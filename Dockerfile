@@ -19,7 +19,7 @@ libasound2 \
 fonts-liberation \
 && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g openclaw@2026.3.13 clawhub@latest
+RUN npm install -g openclaw@2026.3.28 clawhub@latest
 
 WORKDIR /app
 
