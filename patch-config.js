@@ -9,17 +9,31 @@ if (!fs.existsSync(CONFIG)) {
 
 let raw = fs.readFileSync(CONFIG, 'utf8');
 
-// Check if exec already configured
-if (raw.includes("exec:") || raw.includes('"exec"')) {
-  console.log('exec already configured');
-  process.exit(0);
-}
-
-// Insert exec after "tools: {"
+// Fix provider in anthropic:default profile
 raw = raw.replace(
-  /tools:\s*\{/,
-  `tools: {\n    exec: {\n      host: 'gateway',\n      security: 'full',\n      ask: 'off',\n    },`
+  /'anthropic:default':\s*\{\s*provider:\s*'openrouter'/,
+  "'anthropic:default': {\n      provider: 'anthropic'"
 );
 
+// Change primary model to anthropic direct
+raw = raw.replace(
+  /primary:\s*'openrouter\/anthropic\/claude-sonnet-4-6'/,
+  "primary: 'anthropic/claude-sonnet-4-6'"
+);
+
+// Fix models list
+raw = raw.replace(
+  /'openrouter\/anthropic\/claude-sonnet-4-6':\s*\{\}/,
+  "'anthropic/claude-sonnet-4-6': {}"
+);
+
+// Add exec if not present
+if (!raw.includes("exec:") && !raw.includes('"exec"')) {
+  raw = raw.replace(
+    /tools:\s*\{/,
+    "tools: {\n    exec: {\n      host: 'gateway',\n      security: 'full',\n      ask: 'off',\n    },"
+  );
+}
+
 fs.writeFileSync(CONFIG, raw, 'utf8');
-console.log('exec config patched successfully');
+console.log('Config patched successfully');
