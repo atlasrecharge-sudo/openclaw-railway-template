@@ -7,4 +7,5 @@ if [ ! -d /data/.linuxbrew ]; then
 fi
 rm -rf /home/linuxbrew/.linuxbrew
 ln -sfn /data/.linuxbrew /home/linuxbrew/.linuxbrew
+node /app/patch-config.js || true
 exec gosu openclaw node src/server.js
