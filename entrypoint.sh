@@ -1,11 +1,10 @@
-# Patch exec config
-CONFIG="/data/.openclaw/openclaw.json"
-if [ -f "$CONFIG" ]; then
-  # Add exec to tools section if not present
-  if ! grep -q '"exec"' "$CONFIG" && ! grep -q "exec:" "$CONFIG"; then
-    sed -i "s/tools: {/tools: {\n    exec: {\n      host: 'gateway',\n      security: 'full',\n      ask: 'off',\n    },/" "$CONFIG"
-    echo "exec config patched with sed"
-  else
-    echo "exec already configured"
-  fi
+#!/bin/bash
+set -e
+chown -R openclaw:openclaw /data
+chmod 700 /data
+if [ ! -d /data/.linuxbrew ]; then
+  cp -a /home/linuxbrew/.linuxbrew /data/.linuxbrew
 fi
+rm -rf /home/linuxbrew/.linuxbrew
+ln -sfn /data/.linuxbrew /home/linuxbrew/.linuxbrew
+exec gosu openclaw node src/server.js
